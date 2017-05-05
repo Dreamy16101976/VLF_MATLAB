@@ -13,29 +13,29 @@ disp('© 2017 Alexey V. Voronin @ FoxyLab');
 disp('https://acdc.foxylab.com');
 disp('**************************');
 % high-pass filter cutoff frequency
-prompt = {'Low Frequency'};
+prompt = {'Low Frequency (f)'};
 defans = {'6000'};
-answer = inputdlg(prompt,'Low Frequency, Hz',1,defans);
+answer = inputdlg(prompt,'Low Frequency (f), Hz',1,defans);
 [low_freq status] = str2num(answer{1});
 if ~status
     error('Incorrect value!');
 end;
-prompt = {'Interval'};
+prompt = {'Interval (dt)'};
 defans = {'20'};
-answer = inputdlg(prompt,'Interval, msec',1,defans);
+answer = inputdlg(prompt,'Interval (dt), msec',1,defans);
 [window status] = str2num(answer{1});
 if ~status
     error('Incorrect value!');
 end;
-prompt = {'Numbers'};
+prompt = {'Numbers (N)'};
 defans = {'5000'};
-answer = inputdlg(prompt,'Numbers',1,defans);
+answer = inputdlg(prompt,'Numbers (N)',1,defans);
 [nums status] = str2num(answer{1});
 if ~status
     error('Incorrect value!');
 end;
-disp(sprintf('Low F = %d Hz',low_freq));
-disp(sprintf('dT = %d msec',window));
+disp(sprintf('f = %d Hz',low_freq));
+disp(sprintf('dt = %d msec',window));
 disp(sprintf('N = %d',nums));
 Fs = 96000; % sampling freq, Hz
 duration = window/1000; % measure interval, sec
