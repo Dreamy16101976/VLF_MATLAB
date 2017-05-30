@@ -1,7 +1,7 @@
 % VLF spectrum analyzer in MATLAB
 % Version 0.1
 % license GPL v3.0
-% Alexey V. Voronin @ FoxyLab Â© 2017
+% Alexey V. Voronin @ FoxyLab © 2017
 % Email: support@foxylab.com
 % Website: https://acdc.foxylab.com
 % -----------------------------------
@@ -9,7 +9,7 @@
 clc; % cmd wnd clear
 close all;  % fig del
 disp('***** VLF spectrum analyzer *****');
-disp('Â© 2017 Alexey V. Voronin @ FoxyLab');
+disp('© 2017 Alexey V. Voronin @ FoxyLab');
 disp('https://acdc.foxylab.com');
 disp('**************************');
 % high-pass filter cutoff frequency
@@ -77,17 +77,18 @@ count = 0;
 trigger(ai); % acquire start
 while (count < nums) % acquire loop
     data = getdata(ai); % data read
+    
     % wait
-    trigger(ai); % acquire start
     Y = fft(data); 
-    P2 = abs(Y/L);
-    P1 = P2(1:L/2+1);
-    P1(2:end-1) = 2*P1(2:end-1);
+    % P2 = abs(Y/L);
+    % P1 = P2(1:L/2+1);
+    % P1(2:end-1) = 2*P1(2:end-1);
     for m =1:1:L/2+1
-        bins(m) = (bins(m)*count+P1(m))/(count+1);
+        bins(m) = (bins(m)*count+abs(Y(m))*2/L)/(count+1);
     end;
     count = count+1;
-    % disp(sprintf('#%d',count));   
+    disp(sprintf('#%d',count));   
+    trigger(ai); % acquire start
 end
 stop(ai); % acquire stop
 delete(ai); % analog input object delete
@@ -112,7 +113,7 @@ fprintf(txt_file,'dt = %d msec\r\n',window);
 fprintf(txt_file,'N = %d\r\n',nums);
 % peak detection
 peak_thres = 100e-6; %peak level
-peak_width = 2; % peak width/2
+peak_width = 3; % peak width/2
 for m =peak_width+1:1:L/2+1-(peak_width+1) % low pass filter
     peak=true;
     %asc test
@@ -139,13 +140,22 @@ for m =peak_width+1:1:L/2+1-(peak_width+1) % low pass filter
             end;
             disp(sprintf('Peak: %d Level: %5.0fu',(m-1)*Fs/L,peak_level*1e6));
             fprintf(txt_file,'Peak: %d ',(m-1)*Fs/L);
-            fprintf(txt_file,'Level: %5.0fm\r\n',peak_level*1e6);
+            fprintf(txt_file,'Level: %5.0fu\r\n',peak_level*1e6);
         end;
     end;
 end;
 fclose(txt_file); % log file close
+
+k=1;
+for m =1:1:L/2+1 % low pass filter
+    if ((m-1)*Fs/L >= peak_low) && ((m-1)*Fs/L <= peak_high)
+        graph(k) = bins(m); % y axis
+        freq(k) = (m-1)*Fs/L; % x axis
+        k = k + 1;
+    end;
+end;
 h = figure(1);
-plot(f,bins); % spectrum
+plot(freq,graph); % spectrum
 grid on;
 title('Spectrum'); % plot title
 xlabel('f, Hz') % OX axis label
