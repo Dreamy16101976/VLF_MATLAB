@@ -1,11 +1,11 @@
 # VLF_MATLAB
 VLF spectrum analyzer in MATLAB
 
-Version 0.1
+Version 0.2
 
 license GPL v3.0
 
-Alexey V. Voronin @ FoxyLab © 2017
+Alexey "FoxyLab" Voronin
 
 Email: support@foxylab.com
 
