@@ -1,7 +1,7 @@
 % VLF spectrum analyzer in MATLAB
-% Version 0.1
+% Version 0.2
 % license GPL v3.0
-% Alexey V. Voronin @ FoxyLab © 2017
+% © Alexey "FoxyLab" Voronin
 % Email: support@foxylab.com
 % Website: https://acdc.foxylab.com
 % -----------------------------------
@@ -9,7 +9,7 @@
 clc; % cmd wnd clear
 close all;  % fig del
 disp('***** VLF spectrum analyzer *****');
-disp('© 2017 Alexey V. Voronin @ FoxyLab');
+disp('© Alexey "FoxyLab" Voronin');
 disp('https://acdc.foxylab.com');
 disp('**************************');
 % high-pass filter cutoff frequency
@@ -111,39 +111,6 @@ txt_file = fopen(unique_txt,'w'); % log file open
 fprintf(txt_file,'f = %d Hz\r\n',low_freq);
 fprintf(txt_file,'dt = %d msec\r\n',window);
 fprintf(txt_file,'N = %d\r\n',nums);
-% peak detection
-peak_thres = 100e-6; %peak level
-peak_width = 3; % peak width/2
-for m =peak_width+1:1:L/2+1-(peak_width+1) % low pass filter
-    peak=true;
-    %asc test
-    for k=m-peak_width:1:m-1
-        if (bins(k)>=bins(m)) %peak fail
-            peak = false;
-        end;
-    end;
-    %desc test
-    for k=m+1:1:m+peak_width
-        if (bins(k)>=bins(m)) %peak fail
-            peak = false;
-        end;
-    end;
-    %width test
-    if ((bins(m)-bins(m-peak_width))<peak_thres) || ((bins(m)-bins(m+peak_width))<peak_thres)
-        peak = false; %peak fail
-    end;
-    if (peak==true)
-        if (((m-1)*Fs/L)>=peak_low) && (((m-1)*Fs/L)<=peak_high)
-            peak_level = bins(m)-bins(m-peak_width);
-            if ((bins(m)-bins(m+peak_width))<peak_level)
-                peak_level = bins(m)-bins(m+peak_width);
-            end;
-            disp(sprintf('Peak: %d Level: %5.0fu',(m-1)*Fs/L,peak_level*1e6));
-            fprintf(txt_file,'Peak: %d ',(m-1)*Fs/L);
-            fprintf(txt_file,'Level: %5.0fu\r\n',peak_level*1e6);
-        end;
-    end;
-end;
 fclose(txt_file); % log file close
 
 k=1;
